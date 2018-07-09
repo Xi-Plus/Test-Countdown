@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set("Asia/Taipei");
 require(__DIR__.'/config.php');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
@@ -10,6 +9,7 @@ $today = time();
 if (isset($argv[1])) {
 	$today = strtotime($argv[1]);
 }
+$today = floor($today / 86400) * 86400;
 echo "post as ".date("Y/m/d", $today)."\n";
 
 $message = "";
@@ -18,7 +18,7 @@ foreach ($C['exam_list'] as $temp) {
 		continue;
 	}
 	$tdehu = $temp["date_start"];
-	$diff = ($tdehu - $today) / 86400;
+	$diff = round(($tdehu - $today) / 86400);
 	if ($diff > 0) {
 		if (floor($diff/7) == 0) {
 			$temp["textwithoutweek"] = preg_replace("/\\\D/", $diff, $temp["textwithoutweek"]);

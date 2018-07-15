@@ -4,13 +4,18 @@ if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
 
+function tzcorrection($time) {
+	$tzcorrection = strtotime("2018/1/1 GMT+0")-strtotime("2018/1/1");
+	return (int)floor(($time + $tzcorrection) / 86400) * 86400;
+}
+
 $testmode = isset($argv[1]);
 $today = time();
 if (isset($argv[1])) {
 	$today = strtotime($argv[1]);
 }
-$today = floor($today / 86400) * 86400;
 echo "post as ".date("Y/m/d", $today)."\n";
+$today = tzcorrection($today);
 
 $message = "";
 foreach ($C['exam_list'] as $temp) {
@@ -18,6 +23,7 @@ foreach ($C['exam_list'] as $temp) {
 		continue;
 	}
 	$tdehu = $temp["date_start"];
+	$tdehu = tzcorrection($tdehu);
 	$diff = round(($tdehu - $today) / 86400);
 	if ($diff > 0) {
 		if (floor($diff/7) == 0) {

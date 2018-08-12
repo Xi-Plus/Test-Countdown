@@ -3,6 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 
 $C['FBpageid'] = 'page_id';
 $C['FBpagetoken'] = 'page_token';
+$cfg['FBverifytoken'] = 'verify_token';
 
 $C['exam_list'] = [
 	[

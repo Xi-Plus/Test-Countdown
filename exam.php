@@ -3,11 +3,7 @@ require(__DIR__.'/config.php');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
-
-function tzcorrection($time) {
-	$tzcorrection = strtotime("2018/1/1 GMT+0")-strtotime("2018/1/1");
-	return (int)floor(($time + $tzcorrection) / 86400) * 86400;
-}
+require(__DIR__.'/function.php');
 
 $testmode = isset($argv[1]);
 $today = time();
@@ -17,29 +13,7 @@ if (isset($argv[1])) {
 echo "post as ".date("Y/m/d", $today)."\n";
 $today = tzcorrection($today);
 
-$message = "";
-foreach ($C['exam_list'] as $temp) {
-	if (isset($temp["start_post_date"]) && $today < $temp["start_post_date"]) {
-		continue;
-	}
-	$tdehu = $temp["date_start"];
-	$tdehu = tzcorrection($tdehu);
-	$diff = round(($tdehu - $today) / 86400);
-	if ($diff > 0) {
-		if (floor($diff/7) == 0) {
-			$temp["textwithoutweek"] = preg_replace("/\\\D/", $diff, $temp["textwithoutweek"]);
-			$message .= $temp["textwithoutweek"]."\n";
-		} else {
-			$temp["text"] = preg_replace("/\\\D/", $diff, $temp["text"]);
-			$temp["text"] = preg_replace("/\\\W/", floor($diff/7), $temp["text"]);
-			$message .= $temp["text"]."\n";
-		}
-	} else if (isset($temp["date_end"]) && $today <= $temp["date_end"]) {
-		if (isset($temp["thedaytext"])) {
-			$message .= $temp["thedaytext"]."\n";
-		}
-	}
-}
+$message = getmessage($today);
 if ($message === "") {
 	exit("nothing to post\n");
 }

@@ -25,7 +25,7 @@ function getmessage($today) {
 				$temp["text"] = preg_replace("/\\\W/", floor($diff/7), $temp["text"]);
 				$message .= $temp["text"]."\n";
 			}
-		} else if (isset($temp["date_end"]) && $today <= $temp["date_end"]) {
+		} else if (isset($temp["date_end"]) && $today <= tzcorrection($temp["date_end"])) {
 			if (isset($temp["thedaytext"])) {
 				$message .= $temp["thedaytext"]."\n";
 			}
